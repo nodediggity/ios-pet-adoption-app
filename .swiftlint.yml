@@ -1,0 +1,18 @@
+disabled_rules:
+  - identifier_name
+  - line_length
+  - force_cast
+  - force_try
+  - nesting
+  - function_parameter_count
+  - file_length
+  - type_body_length
+  - cyclomatic_complexity
+  - large_tuple
+  - type_name
+  - multiple_closures_with_trailing_closure
+  - function_body_length
+  - duplicate_enum_cases
+  - empty_parentheses_with_trailing_closure
+  - weak_delegate
+  - block_based_kvo

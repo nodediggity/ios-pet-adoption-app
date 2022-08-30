@@ -1,0 +1,8 @@
+--exclude Pods,Generated
+--header "\n{file}\n"
+--disable unusedArguments,trailingCommas,wrapMultilineStatementBraces
+--enable isEmpty,blankLinesBetweenScopes,wrapEnumCases,spaceInsideComments,redundantPattern
+--wraparguments before-first
+--emptybraces spaced
+--importgrouping testable-bottom
+--stripunusedargs always
