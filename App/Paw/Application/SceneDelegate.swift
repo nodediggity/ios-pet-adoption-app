@@ -16,7 +16,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: scene)
         
-        window.rootViewController = FeedUIComposer.compose(loader: makeRemoteFeedLoader, imageLoader: makeRemoteImageLoader)
+        let rootViewController = UITabBarController()
+        rootViewController.tabBar.tintColor = UIColor(hex: "F2968F")
+        rootViewController.tabBar.unselectedItemTintColor = .lightGray
+
+        rootViewController.viewControllers = makeTabs(tabs: [.feed, .search, .profile])
+        window.rootViewController = rootViewController
+        
         window.makeKeyAndVisible()
         self.window = window
     }
@@ -47,5 +53,29 @@ private extension SceneDelegate {
             .dispatch(request)
             .tryMap(ImageDataResponseMapper.map)
             .eraseToAnyPublisher()
+    }
+    
+    func makeFeedScene() -> UIViewController {
+        FeedUIComposer.compose(loader: makeRemoteFeedLoader, imageLoader: makeRemoteImageLoader) { _ in }
+    }
+    
+    func makeTabs(tabs: [Tabs]) -> [UINavigationController] {
+        let navControllers = tabs.indices
+            .map { index -> UINavigationController in
+                let tab = tabs[index]
+                let navController = UINavigationController()
+                navController.tabBarItem = .init(title: .none, image: tab.iconOff, selectedImage: tab.iconOn)
+                return navController
+            }
+
+        return zip(tabs, navControllers).map { tab, navController in
+            switch tab {
+            case .feed: navController.setViewControllers([makeFeedScene()], animated: false)
+            default: navController.setViewControllers([UIViewController()], animated: false)
+            }
+            
+            navController.showLogo()
+            return navController
+        }
     }
 }

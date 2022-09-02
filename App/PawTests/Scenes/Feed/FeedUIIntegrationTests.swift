@@ -304,12 +304,37 @@ class FeedUIIntegrationTests: XCTestCase {
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item0.imageURL, item0.imageURL])
     }
     
+    // MARK: - Selection
+    
+    func test_item_notifiesHandlerOnSelection() {
+        let item0 = makeItem(category: .dog)
+        let item1 = makeItem(category: .cat)
+        
+        var output: [FeedItem] = []
+        
+        let (sut, spy) = makeSUT(selection: { output.append($0) })
+
+        sut.loadViewIfNeeded()
+
+        let feed = [item0, item1]
+        spy.completeFeedLoading(with: .success(feed))
+        
+        XCTAssertTrue(output.isEmpty)
+        
+        sut.simulateItemSelection(at: 0)
+        
+        XCTAssertEqual(output, [item0])
+        
+        sut.simulateItemSelection(at: 1)
+        
+        XCTAssertEqual(output, [item0, item1])
+    }
 }
 
 private extension FeedUIIntegrationTests {
     func makeSUT(file: StaticString = #filePath, line: UInt = #line, selection: @escaping (FeedItem) -> Void = { _ in }) -> (sut: CollectionViewController, spy: LoaderSpy) {
         let spy = LoaderSpy()
-        let sut = FeedUIComposer.compose(loader: spy.load, imageLoader: spy.load(_:))
+        let sut = FeedUIComposer.compose(loader: spy.load, imageLoader: spy.load(_:), selection: selection)
         
         trackForMemoryLeaks(spy, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)

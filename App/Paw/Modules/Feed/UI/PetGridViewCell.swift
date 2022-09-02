@@ -13,6 +13,8 @@ public final class PetGridViewCell: UICollectionViewCell {
         let view = UIImageView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .lightGray
+        view.contentMode = .scaleAspectFill
+        view.clipsToBounds = true
         return view
     }()
     
@@ -21,6 +23,7 @@ public final class PetGridViewCell: UICollectionViewCell {
         view.textColor = .label
         view.font = .preferredFont(forTextStyle: .body, compatibleWith: .init(legibilityWeight: .bold))
         view.numberOfLines = 1
+        view.textAlignment = .left
         return view
     }()
     
@@ -29,6 +32,7 @@ public final class PetGridViewCell: UICollectionViewCell {
         view.textColor = .secondaryLabel
         view.font = .preferredFont(forTextStyle: .caption1)
         view.numberOfLines = 1
+        view.textAlignment = .right
         return view
     }()
     
@@ -54,13 +58,14 @@ public final class PetGridViewCell: UICollectionViewCell {
 private extension PetGridViewCell {
     func configureUI() {
         
-        contentView.backgroundColor = .secondarySystemBackground
+        contentView.backgroundColor = .clear
         
         let hStack = UIStackView(arrangedSubviews: [
             nameLabel,
             ageLabel
         ])
         hStack.axis = .horizontal
+        hStack.distribution = .fillEqually
         
         let vStack = UIStackView(arrangedSubviews: [
             hStack,
@@ -71,17 +76,28 @@ private extension PetGridViewCell {
         vStack.isLayoutMarginsRelativeArrangement = true
         vStack.layoutMargins = .init(top: 4, left: 6, bottom: 4, right: 6)
         
-        [imageView, vStack].forEach(contentView.addSubview)
+        let container = CardContainerView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.backgroundColor = .secondarySystemBackground
+        
+        contentView.addSubview(container)
+        
+        [imageView, vStack].forEach(container.addSubview)
         NSLayoutConstraint.activate([
             imageView.heightAnchor.constraint(equalToConstant: 130),
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
+            imageView.topAnchor.constraint(equalTo: container.topAnchor),
+            imageView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
             
             vStack.topAnchor.constraint(equalTo: imageView.bottomAnchor),
-            vStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: vStack.bottomAnchor),
-            contentView.trailingAnchor.constraint(equalTo: vStack.trailingAnchor)
+            vStack.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            container.bottomAnchor.constraint(equalTo: vStack.bottomAnchor),
+            container.trailingAnchor.constraint(equalTo: vStack.trailingAnchor),
+            
+            container.topAnchor.constraint(equalTo: contentView.topAnchor),
+            container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            contentView.trailingAnchor.constraint(equalTo: container.trailingAnchor)
         ])
         
     }
