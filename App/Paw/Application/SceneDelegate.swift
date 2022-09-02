@@ -15,8 +15,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: scene)
-
-        window.rootViewController = FeedUIComposer.compose(loader: makeRemoteFeedLoader)
+        
+        window.rootViewController = FeedUIComposer.compose(loader: makeRemoteFeedLoader, imageLoader: makeRemoteImageLoader)
         window.makeKeyAndVisible()
         self.window = window
     }
@@ -39,5 +39,13 @@ private extension SceneDelegate {
         } catch {
             return Fail(error: error).eraseToAnyPublisher()
         }
+    }
+    
+    func makeRemoteImageLoader(imageURL: URL) -> AnyPublisher<Data, Error> {
+        let request = URLRequest(url: imageURL)
+        return httpClient
+            .dispatch(request)
+            .tryMap(ImageDataResponseMapper.map)
+            .eraseToAnyPublisher()
     }
 }

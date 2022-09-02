@@ -20,4 +20,8 @@ extension PetGridViewCell {
     var breedText: String? {
         breedLabel.text
     }
+    
+    var renderedImage: Data? {
+        imageView.image?.pngData()
+    }
 }
