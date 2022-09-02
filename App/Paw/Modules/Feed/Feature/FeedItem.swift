@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct FeedItem: Equatable {
+public struct FeedItem: Equatable, Hashable {
     public let id: UUID
     public let category: Category
     public let name: String
@@ -16,7 +16,7 @@ public struct FeedItem: Equatable {
     public let weight: String
     public let imageURL: URL
 
-    public enum Category: Equatable {
+    public enum Category: Equatable, Hashable {
         case dog
         case cat
         case other(String)
