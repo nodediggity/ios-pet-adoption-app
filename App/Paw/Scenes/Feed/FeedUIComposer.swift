@@ -11,8 +11,9 @@ import Combine
 enum FeedUIComposer {
     
     typealias FeedLoader = () -> AnyPublisher<[FeedItem], Error>
+    typealias ImageLoader = (URL) -> AnyPublisher<Data, Error>
     
-    static func compose(loader: @escaping FeedLoader) -> CollectionViewController {
+    static func compose(loader: @escaping FeedLoader, imageLoader: @escaping ImageLoader) -> CollectionViewController {
         
         let layout = makeCompositionalLayout()
         let controller = CollectionViewController(layout: layout)
@@ -24,7 +25,7 @@ enum FeedUIComposer {
         
         let adapter = LoadResourcePresentationAdapter<[FeedItem], FeedViewAdapter>(loader: loader)
         adapter.presenter = LoadResourcePresenter(
-            resourceView: FeedViewAdapter(controller: controller),
+            resourceView: FeedViewAdapter(controller: controller, imageLoader: imageLoader),
             loadingView: WeakRefVirtualProxy(controller)
         )
         

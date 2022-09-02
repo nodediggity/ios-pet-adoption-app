@@ -29,3 +29,38 @@ extension CollectionViewController {
         return ds?.collectionView(collectionView, cellForItemAt: indexPath)
     }
 }
+
+extension CollectionViewController {
+    
+    private var homeFeedSection: Int { 0 }
+    
+    @discardableResult
+    func simulateItemVisible(at index: Int) -> PetGridViewCell? {
+        cell(at: IndexPath(item: index, section: homeFeedSection)) as? PetGridViewCell
+    }
+    
+    @discardableResult
+    func simulateItemNotVisible(at index: Int) -> PetGridViewCell? {
+        let indexPath = IndexPath(row: index, section: homeFeedSection)
+        let view = simulateItemVisible(at: index)
+        
+        let dl = collectionView.delegate
+        dl?.collectionView?(collectionView, didEndDisplaying: view!, forItemAt: indexPath)
+
+        return view
+    }
+    
+    func simulateItemNearVisible(at index: Int) {
+        let pds = collectionView.prefetchDataSource
+        let indexPath = IndexPath(item: index, section: homeFeedSection)
+        pds?.collectionView(collectionView, prefetchItemsAt: [indexPath])
+    }
+    
+    func simulateItemNoLongerNearVisible(at index: Int) {
+        simulateItemNearVisible(at: index)
+        
+        let pds = collectionView.prefetchDataSource
+        let indexPath = IndexPath(item: index, section: homeFeedSection)
+        pds?.collectionView?(collectionView, cancelPrefetchingForItemsAt: [indexPath])
+    }
+}

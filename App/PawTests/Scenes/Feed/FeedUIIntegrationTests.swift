@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import UIKit
 @testable import Paw
 
 class FeedUIIntegrationTests: XCTestCase {
@@ -125,12 +126,190 @@ class FeedUIIntegrationTests: XCTestCase {
         }
         wait(for: [exp], timeout: 1.0)
     }
+    
+    // MARK: - Image Loading
+    
+    func test_itemImageView_loadsImageURLWhenVisible() {
+        let item0 = makeItem(category: .dog)
+        let item1 = makeItem(category: .cat)
+        
+        let (sut, spy) = makeSUT()
+
+        sut.loadViewIfNeeded()
+
+        let feed = [item0, item1]
+        spy.completeFeedLoading(with: .success(feed))
+        
+        XCTAssertTrue(spy.loadImageRequests.isEmpty)
+        
+        sut.simulateItemVisible(at: 0)
+        
+        XCTAssertEqual(spy.loadImageRequests, [item0.imageURL])
+        
+        sut.simulateItemVisible(at: 1)
+        
+        XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item1.imageURL])
+    }
+    
+    func test_itemImageView_cancelsImageLoadingWhenNotVisibleAnymore() {
+        let item0 = makeItem(category: .dog)
+        let item1 = makeItem(category: .cat)
+        
+        let (sut, spy) = makeSUT()
+
+        sut.loadViewIfNeeded()
+
+        let feed = [item0, item1]
+        spy.completeFeedLoading(with: .success(feed))
+        
+        XCTAssertTrue(spy.cancelledRequests.isEmpty)
+        
+        sut.simulateItemNotVisible(at: 0)
+        
+        XCTAssertEqual(spy.cancelledRequests, [item0.imageURL])
+        
+        sut.simulateItemNotVisible(at: 1)
+        
+        XCTAssertEqual(spy.cancelledRequests, [item0.imageURL, item1.imageURL])
+    }
+    
+    func test_itemImageView_rendersImageLoadedFromURL() {
+        let item0 = makeItem(category: .dog)
+        let item1 = makeItem(category: .cat)
+        
+        let (sut, spy) = makeSUT()
+
+        sut.loadViewIfNeeded()
+
+        let feed = [item0, item1]
+        spy.completeFeedLoading(with: .success(feed))
+        
+        let view0 = sut.simulateItemVisible(at: 0)
+        let view1 = sut.simulateItemVisible(at: 1)
+        
+        XCTAssertNil(view0?.renderedImage)
+        XCTAssertNil(view1?.renderedImage)
+        
+        let imageData0 = UIImage.makeImageData(withColor: .red)
+        spy.completeImageLoading(with: .success(imageData0))
+        
+        XCTAssertEqual(view0?.renderedImage, imageData0)
+        XCTAssertNil(view1?.renderedImage)
+        
+        let imageData1 = UIImage.makeImageData(withColor: .blue)
+        spy.completeImageLoading(with: .success(imageData1), at: 1)
+        
+        XCTAssertEqual(view0?.renderedImage, imageData0)
+        XCTAssertEqual(view1?.renderedImage, imageData1)
+    }
+    
+    // MARK: - Image Loading (Preloading)
+    
+    func test_itemImageView_preloadsImageURLWhenNearVisible() {
+        let item0 = makeItem(category: .dog)
+        let item1 = makeItem(category: .cat)
+        
+        let (sut, spy) = makeSUT()
+
+        sut.loadViewIfNeeded()
+
+        let feed = [item0, item1]
+        spy.completeFeedLoading(with: .success(feed))
+        
+        XCTAssertTrue(spy.loadImageRequests.isEmpty)
+        
+        sut.simulateItemNearVisible(at: 0)
+        
+        XCTAssertEqual(spy.loadImageRequests, [item0.imageURL])
+        
+        sut.simulateItemNearVisible(at: 1)
+        
+        XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item1.imageURL])
+    }
+    
+    func test_itemImageView_cancelsImageURLPreloadingWhenNotNearVisibleAnymore() {
+        let item0 = makeItem(category: .dog)
+        let item1 = makeItem(category: .cat)
+        
+        let (sut, spy) = makeSUT()
+
+        sut.loadViewIfNeeded()
+
+        let feed = [item0, item1]
+        spy.completeFeedLoading(with: .success(feed))
+        
+        XCTAssertTrue(spy.cancelledRequests.isEmpty)
+        
+        sut.simulateItemNoLongerNearVisible(at: 0)
+        
+        XCTAssertEqual(spy.cancelledRequests, [item0.imageURL])
+        
+        sut.simulateItemNoLongerNearVisible(at: 1)
+        
+        XCTAssertEqual(spy.cancelledRequests, [item0.imageURL, item1.imageURL])
+    }
+    
+    func test_itemImageView_doesNotRenderLoadedImageWhenNotVisibleAnymore() {
+        let (sut, spy) = makeSUT()
+        sut.loadViewIfNeeded()
+        spy.completeFeedLoading(with: .success([makeItem(category: .dog)]))
+        
+        let view = sut.simulateItemNotVisible(at: 0)
+        spy.completeImageLoading(with: .success(UIImage.makeImageData(withColor: .red)))
+        
+        XCTAssertNil(view?.renderedImage)
+    }
+    
+    func test_imageLoadCompletion_dispatchesFromBackgroundToMainThread() {
+        let (sut, spy) = makeSUT()
+
+        sut.loadViewIfNeeded()
+
+        let feed = [makeItem(category: .dog)]
+        spy.completeFeedLoading(with: .success(feed))
+        
+        _ = sut.simulateItemVisible(at: 0)
+        
+        let exp = expectation(description: "await background queue")
+        DispatchQueue.global().async {
+            spy.completeImageLoading(with: .success(UIImage.makeImageData(withColor: .red)))
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+    }
+    
+    func test_itemImageView_doesNotLoadImageAgainUntilPreviousRequestCompletes() {
+        let item0 = makeItem(category: .dog)
+        let (sut, spy) = makeSUT()
+        sut.loadViewIfNeeded()
+        spy.completeFeedLoading(with: .success([item0]))
+        
+        sut.simulateItemNearVisible(at: 0)
+        XCTAssertEqual(spy.loadImageRequests, [item0.imageURL])
+        
+        sut.simulateItemNearVisible(at: 0)
+        XCTAssertEqual(spy.loadImageRequests, [item0.imageURL])
+        
+        let imageData0 = UIImage.makeImageData(withColor: .blue)
+        spy.completeImageLoading(with: .success(imageData0))
+        
+        sut.simulateItemNearVisible(at: 0)
+        XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item0.imageURL])
+        
+        sut.simulateItemNearVisible(at: 0)
+        XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item0.imageURL])
+        
+        sut.simulateItemNotVisible(at: 0)
+        sut.simulateItemNearVisible(at: 0)
+        XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item0.imageURL, item0.imageURL])
+    }
+    
 }
 
 private extension FeedUIIntegrationTests {
     func makeSUT(file: StaticString = #filePath, line: UInt = #line, selection: @escaping (FeedItem) -> Void = { _ in }) -> (sut: CollectionViewController, spy: LoaderSpy) {
         let spy = LoaderSpy()
-        let sut = FeedUIComposer.compose(loader: spy.load)
+        let sut = FeedUIComposer.compose(loader: spy.load, imageLoader: spy.load(_:))
         
         trackForMemoryLeaks(spy, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)

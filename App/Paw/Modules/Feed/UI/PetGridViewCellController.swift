@@ -9,6 +9,9 @@ import UIKit
 
 public final class PetGridViewCellController: NSObject {
     
+    public var onLoad: (() -> Void)?
+    public var onCancel: (() -> Void)?
+    
     private let viewModel: FeedItemViewModel
     private let selection: () -> Void
     
@@ -33,11 +36,13 @@ extension PetGridViewCellController: UICollectionViewDataSource {
         cell?.ageLabel.text = viewModel.age
         cell?.imageView.image = nil
                 
+        onLoad?()
+        
         return cell!
     }
 }
 
-extension PetGridViewCellController: UICollectionViewDelegate {
+extension PetGridViewCellController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selection()
     }
@@ -49,7 +54,7 @@ extension PetGridViewCellController: UICollectionViewDelegate {
 
 extension PetGridViewCellController: UICollectionViewDataSourcePrefetching {
     public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        
+        onLoad?()
     }
     
     public func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
@@ -57,9 +62,17 @@ extension PetGridViewCellController: UICollectionViewDataSourcePrefetching {
     }
 }
 
+extension PetGridViewCellController: ResourceView {
+    public typealias ResourceViewModel = UIImage
+    public func display(_ viewModel: ResourceViewModel) {
+        cell?.imageView.image = viewModel
+    }
+}
+
 private extension PetGridViewCellController {
     func cancelLoad() {
         releaseCellForReuse()
+        onCancel?()
     }
     
     func releaseCellForReuse() {
