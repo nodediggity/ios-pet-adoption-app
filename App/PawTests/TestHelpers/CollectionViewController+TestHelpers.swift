@@ -63,4 +63,10 @@ extension CollectionViewController {
         let indexPath = IndexPath(item: index, section: homeFeedSection)
         pds?.collectionView?(collectionView, cancelPrefetchingForItemsAt: [indexPath])
     }
+    
+    func simulateItemSelection(at index: Int) {
+        let dl = collectionView.delegate
+        let indexPath = IndexPath(item: index, section: homeFeedSection)
+        dl?.collectionView?(collectionView, didSelectItemAt: indexPath)
+    }
 }
