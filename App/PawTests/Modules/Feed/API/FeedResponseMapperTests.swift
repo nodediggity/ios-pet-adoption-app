@@ -2,8 +2,8 @@
 // FeedResponseMapperTests.swift
 //
 
-import XCTest
 import Paw
+import XCTest
 
 class FeedResponseMapperTests: XCTestCase {
     func test_map_throwsErrorOnNon200HTTPResponse() throws {
@@ -32,16 +32,16 @@ class FeedResponseMapperTests: XCTestCase {
 
         XCTAssertEqual(result, [])
     }
-    
+
     func test_map_deliversItemsOn200HTTPResponseWithJSONItems() throws {
         let item0 = makeItem(id: UUID(), category: .dog)
         let item1 = makeItem(id: UUID(), category: .cat)
         let item2 = makeItem(id: UUID(), category: .other("FISH"))
-        
+
         let json = makeJSON([item0.json, item1.json, item2.json])
-        
+
         let result = try FeedResponseMapper.map(json, from: HTTPURLResponse(statusCode: 200))
-        
+
         XCTAssertEqual(result, [item0.model, item1.model, item2.model])
     }
 }
@@ -51,11 +51,10 @@ private extension FeedResponseMapperTests {
         let json = ["content": items]
         return try! JSONSerialization.data(withJSONObject: json)
     }
-    
+
     func makeItem(id: UUID, category: FeedItem.Category) -> (model: FeedItem, json: [String: Any]) {
         let imageURL = makeURL(addr: "https://image.com/\(id.uuidString)")
-        
-            
+
         let model = FeedItem(
             id: id,
             category: category,
@@ -65,7 +64,7 @@ private extension FeedResponseMapperTests {
             weight: "a weight \(id.uuidString)",
             imageURL: imageURL
         )
-        
+
         let json = [
             "id": id.uuidString,
             "category": {
@@ -81,7 +80,7 @@ private extension FeedResponseMapperTests {
             "weight": model.weight,
             "imageURL": imageURL.absoluteString
         ]
-        
+
         return (model, json)
     }
 }

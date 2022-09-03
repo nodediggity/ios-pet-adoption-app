@@ -2,29 +2,27 @@
 // SceneDelegate.swift
 //
 
-import UIKit
 import Combine
+import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
-    
-    private lazy var httpClient: HTTPClient = {
-        URLSessionHTTPClient(session: .init(configuration: .ephemeral))
-    }()
-    
+
+    private lazy var httpClient: HTTPClient = URLSessionHTTPClient(session: .init(configuration: .ephemeral))
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: scene)
-        
+
         let rootViewController = UITabBarController()
         rootViewController.tabBar.tintColor = UIColor(hex: "F2968F")
         rootViewController.tabBar.unselectedItemTintColor = .lightGray
 
         rootViewController.viewControllers = makeTabs(tabs: [.feed, .alerts, .profile])
         window.rootViewController = rootViewController
-                
+
         window.makeKeyAndVisible()
-        
+
         self.window = window
     }
 }
@@ -37,17 +35,17 @@ private extension SceneDelegate {
                 .set(host: "localhost")
                 .set(path: ["feed"])
                 .build()
-            
+
             return httpClient
                 .dispatch(request)
                 .tryMap(FeedResponseMapper.map)
                 .eraseToAnyPublisher()
-            
+
         } catch {
             return Fail(error: error).eraseToAnyPublisher()
         }
     }
-    
+
     func makeRemoteImageLoader(imageURL: URL) -> AnyPublisher<Data, Error> {
         let request = URLRequest(url: imageURL)
         return httpClient
@@ -55,27 +53,27 @@ private extension SceneDelegate {
             .tryMap(ImageDataResponseMapper.map)
             .eraseToAnyPublisher()
     }
-    
+
     func makeRemoteProfileLoader(id: UUID) -> () -> AnyPublisher<Profile, Error> {
-        return { [httpClient] in
+        { [httpClient] in
             do {
                 let request = try URLRequestBuilder()
                     .set(scheme: "http")
                     .set(host: "localhost")
                     .set(path: ["profile", "\(id.uuidString)"])
                     .build()
-                
+
                 return httpClient
                     .dispatch(request)
                     .tryMap(ProfileResponseMapper.map)
                     .eraseToAnyPublisher()
-                
+
             } catch {
                 return Fail(error: error).eraseToAnyPublisher()
             }
         }
     }
-    
+
     func makeFeedScene() -> UIViewController {
         FeedUIComposer.compose(
             loader: makeRemoteFeedLoader,
@@ -83,7 +81,7 @@ private extension SceneDelegate {
             selection: showFeedDetailScene
         )
     }
-    
+
     func showFeedDetailScene(item: FeedItem) {
         let controller = FeedDetailUIComposer.compose(
             loader: makeRemoteProfileLoader(id: item.id),
@@ -91,7 +89,7 @@ private extension SceneDelegate {
         )
         showOnTab(controller)
     }
-    
+
     func makeTabs(tabs: [Tabs]) -> [UINavigationController] {
         let navControllers = tabs.indices
             .map { index -> UINavigationController in
@@ -114,7 +112,7 @@ private extension SceneDelegate {
             return navController
         }
     }
-    
+
     func showOnTab(_ controller: UIViewController) {
         let tabBarController = window?.rootViewController as? UITabBarController
         tabBarController?.selectedViewController?.show(controller, sender: nil)

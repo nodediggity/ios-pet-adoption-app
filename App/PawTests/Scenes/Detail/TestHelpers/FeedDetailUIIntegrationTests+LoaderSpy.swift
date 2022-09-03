@@ -1,28 +1,23 @@
 //
-//  FeedDetailUIIntegrationTests+LoaderSpy.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 03/09/2022.
+// FeedDetailUIIntegrationTests+LoaderSpy.swift
 //
 
+import Combine
 import Foundation
 import Paw
-import Combine
 
 extension FeedDetailUIIntegrationTests {
-    
     class LoaderSpy {
-        
         var loadDetailsCallCount: Int { loadDetailsRequests.count }
-        
+
         private var loadDetailsRequests: [PassthroughSubject<Profile, Error>] = []
-        
+
         func load() -> AnyPublisher<Profile, Error> {
             let publisher = PassthroughSubject<Profile, Error>()
             loadDetailsRequests.append(publisher)
             return publisher.eraseToAnyPublisher()
         }
-        
+
         func completeDetailsLoading(with result: Result<Profile, Error>, at index: Int = 0) {
             switch result {
             case let .success(items):
@@ -32,12 +27,12 @@ extension FeedDetailUIIntegrationTests {
             }
             loadDetailsRequests[index].send(completion: .finished)
         }
-        
+
         var loadImageRequests: [URL] { imageRequestCache.map(\.url) }
         private(set) var cancelledRequests: [URL] = []
-        
+
         private var imageRequestCache: [(url: URL, publisher: PassthroughSubject<Data, Error>)] = []
-        
+
         func load(_ imageURL: URL) -> AnyPublisher<Data, Error> {
             let publisher = PassthroughSubject<Data, Error>()
             imageRequestCache.append((imageURL, publisher))
@@ -45,7 +40,7 @@ extension FeedDetailUIIntegrationTests {
                 .handleEvents(receiveCancel: { [weak self] in self?.cancelledRequests.append(imageURL) })
                 .eraseToAnyPublisher()
         }
-        
+
         func completeImageLoading(with result: Result<Data, Error>, at index: Int = 0) {
             switch result {
             case let .success(items):
@@ -55,8 +50,5 @@ extension FeedDetailUIIntegrationTests {
             }
             imageRequestCache[index].publisher.send(completion: .finished)
         }
-
     }
-    
 }
-

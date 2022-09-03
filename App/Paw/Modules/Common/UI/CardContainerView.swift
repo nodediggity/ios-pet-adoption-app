@@ -1,29 +1,26 @@
 //
-//  CardContainerView.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// CardContainerView.swift
 //
 
 import UIKit
 
 public final class CardContainerView: UIView {
     private var didlLayoutSubviews = false
-    
+
     public required init() {
         super.init(frame: .zero)
         configureUI()
     }
-        
+
     required init?(coder: NSCoder) {
         nil
     }
-    
-    public override func layoutSubviews() {
+
+    override public func layoutSubviews() {
         super.layoutSubviews()
         guard !didlLayoutSubviews else { return }
         didlLayoutSubviews = true
-        
+
         layer.borderWidth = 1
         layer.borderColor = UIColor.quaternarySystemFill.cgColor
     }

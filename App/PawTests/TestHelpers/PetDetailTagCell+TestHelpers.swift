@@ -1,12 +1,9 @@
 //
-//  PetDetailTagCell+TestHelpers.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 03/09/2022.
+// PetDetailTagCell+TestHelpers.swift
 //
 
-import UIKit
 import Paw
+import UIKit
 
 extension PetDetailTagCell {
     var text: String? {

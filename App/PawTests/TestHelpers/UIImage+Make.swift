@@ -1,14 +1,10 @@
 //
-//  UIImage+Make.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 02/09/2022.
+// UIImage+Make.swift
 //
 
 import UIKit
 
 extension UIImage {
-    
     static func make(withColor color: UIColor) -> UIImage {
         let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
         UIGraphicsBeginImageContext(rect.size)
@@ -19,7 +15,7 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return img!
     }
-    
+
     static func makeImageData(withColor color: UIColor) -> Data {
         make(withColor: color).pngData()!
     }

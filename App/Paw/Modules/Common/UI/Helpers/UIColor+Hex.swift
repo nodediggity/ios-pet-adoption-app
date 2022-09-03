@@ -1,8 +1,5 @@
 //
-//  UIColor+Hex.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// UIColor+Hex.swift
 //
 
 import UIKit

@@ -1,8 +1,5 @@
 //
-//  URLRequestBuilder.swift
-//  Paw
-//
-//  Created by Gordon Smith on 01/09/2022.
+// URLRequestBuilder.swift
 //
 
 import Foundation
@@ -132,7 +129,7 @@ public final class URLRequestBuilder {
         components.host = host
 
         if !path.isEmpty {
-            let path = self.path.joined(separator: "/")
+            let path = path.joined(separator: "/")
             components.path = path.hasPrefix("/") ? path : "/" + path
         }
 

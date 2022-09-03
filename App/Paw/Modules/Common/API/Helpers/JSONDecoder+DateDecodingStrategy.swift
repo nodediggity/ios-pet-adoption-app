@@ -1,8 +1,5 @@
 //
-//  JSONDecoder+DateDecodingStrategy.swift
-//  Paw
-//
-//  Created by Gordon Smith on 03/09/2022.
+// JSONDecoder+DateDecodingStrategy.swift
 //
 
 import Foundation
@@ -17,15 +14,13 @@ public extension JSONDecoder.DateDecodingStrategy {
         if let date = Formatter.iso8601withFractionalSeconds.date(from: string) {
             return date
         }
-        
+
         throw UnexpectedDataFormat()
     }
 }
 
 public extension Formatter {
-    static let iso8601withFractionalSeconds: DateFormatter = {
-        makeDateFormatter(usingFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX")
-    }()
+    static let iso8601withFractionalSeconds: DateFormatter = makeDateFormatter(usingFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX")
 
     private static func makeDateFormatter(usingFormat format: String) -> DateFormatter {
         let formatter = DateFormatter()

@@ -1,8 +1,5 @@
 //
-//  ProfileResponseMapper.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// ProfileResponseMapper.swift
 //
 
 import Foundation
@@ -36,7 +33,7 @@ private extension ProfileResponseMapper {
         let imageURL: URL
         let isAvailable: Bool
         let tags: [String]
-        
+
         var asProfile: Profile {
             Profile(
                 id: id,

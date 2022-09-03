@@ -1,8 +1,5 @@
 //
-//  Profile.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// Profile.swift
 //
 
 import Foundation
@@ -15,7 +12,7 @@ public struct Profile: Equatable, Hashable {
     public let lastUpdatedDate: Date
     public let imageURL: URL
     public let isAvailable: Bool
-    
+
     public init(id: UUID, name: String, tags: [String], about: String, lastUpdatedDate: Date, imageURL: URL, isAvailable: Bool) {
         self.id = id
         self.name = name

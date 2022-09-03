@@ -1,8 +1,5 @@
 //
-//  UICollectionView+Dequeueing.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// UICollectionView+Dequeueing.swift
 //
 
 import UIKit

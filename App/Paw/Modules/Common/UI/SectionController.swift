@@ -1,8 +1,5 @@
 //
-//  SectionController.swift
-//  Paw
-//
-//  Created by Gordon Smith on 03/09/2022.
+// SectionController.swift
 //
 
 import UIKit

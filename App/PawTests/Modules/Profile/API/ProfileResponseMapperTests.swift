@@ -1,12 +1,9 @@
 //
-//  ProfileResponseMapperTests.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 03/09/2022.
+// ProfileResponseMapperTests.swift
 //
 
-import XCTest
 import Paw
+import XCTest
 
 class ProfileResponseMapperTests: XCTestCase {
     func test_map_throwsErrorOnNon200HTTPResponse() throws {
@@ -40,9 +37,9 @@ class ProfileResponseMapperTests: XCTestCase {
 
 private extension ProfileResponseMapperTests {
     func makeJSON(_ json: [String: Any]) -> Data {
-        return try! JSONSerialization.data(withJSONObject: json)
+        try! JSONSerialization.data(withJSONObject: json)
     }
-    
+
     func makeItem(id: UUID = UUID()) -> (model: Profile, json: [String: Any]) {
         let imageURL = makeURL(addr: "https://image.com/\(id.uuidString)")
         let updated = (date: 1_600_250_504.489, string: "2020-09-16T10:01:44.489Z")
@@ -56,7 +53,7 @@ private extension ProfileResponseMapperTests {
             imageURL: imageURL.absoluteURL,
             isAvailable: true
         )
-        
+
         let json = [
             "id": model.id.uuidString,
             "name": model.name,
@@ -66,7 +63,7 @@ private extension ProfileResponseMapperTests {
             "isAvailable": true,
             "imageURL": imageURL.absoluteString
         ] as [String: Any]
-    
+
         return (model, json)
     }
 }

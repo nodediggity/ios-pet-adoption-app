@@ -1,8 +1,5 @@
 //
-//  FeedItem.swift
-//  Paw
-//
-//  Created by Gordon Smith on 01/09/2022.
+// FeedItem.swift
 //
 
 import Foundation
@@ -21,7 +18,7 @@ public struct FeedItem: Equatable, Hashable {
         case cat
         case other(String)
     }
-    
+
     public init(id: UUID, category: FeedItem.Category, name: String, breed: String, age: String, weight: String, imageURL: URL) {
         self.id = id
         self.category = category
@@ -31,5 +28,4 @@ public struct FeedItem: Equatable, Hashable {
         self.weight = weight
         self.imageURL = imageURL
     }
-    
 }
