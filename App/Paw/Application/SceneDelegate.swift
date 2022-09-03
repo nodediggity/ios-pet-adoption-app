@@ -31,8 +31,7 @@ private extension SceneDelegate {
     func makeRemoteFeedLoader() -> AnyPublisher<[FeedItem], Error> {
         do {
             let request = try URLRequestBuilder()
-                .set(scheme: "http")
-                .set(host: "localhost")
+                .set(host: "afternoon-mountain-87866.herokuapp.com")
                 .set(path: ["feed"])
                 .build()
 
@@ -58,8 +57,7 @@ private extension SceneDelegate {
         { [httpClient] in
             do {
                 let request = try URLRequestBuilder()
-                    .set(scheme: "http")
-                    .set(host: "localhost")
+                    .set(host: "afternoon-mountain-87866.herokuapp.com")
                     .set(path: ["profile", "\(id.uuidString)"])
                     .build()
 
