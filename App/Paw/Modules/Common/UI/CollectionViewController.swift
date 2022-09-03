@@ -9,12 +9,13 @@ import UIKit
 
 public final class CollectionViewController: UICollectionViewController {
     
-    public typealias DataSource = UICollectionViewDiffableDataSource<Int, CellController>
+    public typealias DataSource = UICollectionViewDiffableDataSource<SectionController, CellController>
 
-    /// Provide additional configuration for the `UICollectionView` such as registering cells or setting preferences
     public var configure: ((UICollectionView) -> Void)?
     
     public var onLoad: (() -> Void)?
+    
+    private var layout: ((DataSource) -> UICollectionViewLayout)?
 
     private lazy var dataSource: DataSource = {
         let ds = DataSource(collectionView: collectionView, cellProvider: { collectionView, index, controller -> UICollectionViewCell? in
@@ -23,8 +24,9 @@ public final class CollectionViewController: UICollectionViewController {
         return ds
     }()
 
-    public init(layout: UICollectionViewCompositionalLayout) {
-        super.init(collectionViewLayout: layout)
+    public init(layout: @escaping (DataSource) -> UICollectionViewLayout) {
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+        self.layout = layout
     }
 
     required init?(coder: NSCoder) {
@@ -63,14 +65,18 @@ public final class CollectionViewController: UICollectionViewController {
         load()
     }
 
-    public func display(_ sections: [CellController]...) {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, CellController>()
-        sections.enumerated().forEach { section, cellControllers in
-            snapshot.appendSections([section])
-            snapshot.appendItems(cellControllers, toSection: section)
+    public func display(_ sections: [SectionController]) {
+        var snapshot = NSDiffableDataSourceSnapshot<SectionController, CellController>()
+        snapshot.appendSections(sections)
+        sections.forEach { section in
+            snapshot.appendItems(section.controllers, toSection: section)
         }
 
         dataSource.apply(snapshot)
+    }
+    
+    public func display(_ sections: SectionController...) {
+        display(sections)
     }
 }
 
@@ -108,11 +114,13 @@ private extension CollectionViewController {
     func configureUI() {
         collectionView.dataSource = dataSource
         collectionView.prefetchDataSource = self
-        
-        collectionView.refreshControl = UIRefreshControl(frame: .zero)
         collectionView.contentInset.bottom = 16
         
         collectionView.backgroundColor = .systemBackground
+        
+        if let layout = layout {
+            collectionView.collectionViewLayout = layout(dataSource)
+        }
         
         configure?(collectionView)
     }

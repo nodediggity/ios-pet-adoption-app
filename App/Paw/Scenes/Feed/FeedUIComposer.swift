@@ -16,8 +16,7 @@ enum FeedUIComposer {
     
     static func compose(loader: @escaping FeedLoader, imageLoader: @escaping ImageLoader, selection: @escaping SelectionHandler) -> CollectionViewController {
         
-        let layout = makeCompositionalLayout()
-        let controller = CollectionViewController(layout: layout)
+        let controller = CollectionViewController(layout: makeLayout)
         
         controller.configure = {
             $0.refreshControl = UIRefreshControl(frame: .zero)
@@ -41,21 +40,42 @@ enum FeedUIComposer {
 }
 
 private extension FeedUIComposer {
-    static func makeCompositionalLayout() -> UICollectionViewCompositionalLayout {
+    
+    static func makeLayout(for dataSource: CollectionViewController.DataSource) -> UICollectionViewLayout {
+        { [weak dataSource] in
+            
+            let layout = UICollectionViewCompositionalLayout { index, env in
+                let snapshot = dataSource?.snapshot()
+                guard let section = snapshot?.sectionIdentifiers[index] else { return .none }
 
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                var layoutSection: NSCollectionLayoutSection?
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(0.5))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
-        let spacing = CGFloat(10)
-        group.interItemSpacing = .fixed(spacing)
+                switch section.category {
+                case .grid:
+                    
+                    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+                    let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = spacing
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+                    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(0.5))
+                    let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+                    let spacing = CGFloat(10)
+                    group.interItemSpacing = .fixed(spacing)
 
-        let layout = UICollectionViewCompositionalLayout(section: section)
-        return layout
+                    let section = NSCollectionLayoutSection(group: group)
+                    section.interGroupSpacing = spacing
+                    section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+                    
+                    layoutSection = section
+                    
+                default: break
+                }
+
+                return layoutSection
+            }
+            
+            let config = UICollectionViewCompositionalLayoutConfiguration()
+            layout.configuration = config
+            return layout
+        }()
     }
 }

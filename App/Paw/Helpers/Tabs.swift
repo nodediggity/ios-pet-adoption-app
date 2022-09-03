@@ -9,13 +9,13 @@ import UIKit
 
 enum Tabs: CaseIterable {
     case feed
-    case search
+    case alerts
     case profile
 
     var iconOn: UIImage? {
         switch self {
         case .feed: return imageNamed("house")
-        case .search: return imageNamed("search")
+        case .alerts: return imageNamed("notification")
         case .profile: return imageNamed("user")
         }
     }
@@ -23,7 +23,7 @@ enum Tabs: CaseIterable {
     var iconOff: UIImage? {
         switch self {
         case .feed: return imageNamed("house")
-        case .search: return imageNamed("search")
+        case .alerts: return imageNamed("notification")
         case .profile:return imageNamed("user")
         }
     }
