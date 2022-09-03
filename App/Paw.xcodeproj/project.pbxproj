@@ -875,7 +875,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ../BuildTools\nSDKROOT=(xcrun --sdk macosx --show-sdk-path)\nswift run -c release swiftformat \"$SRCROOT\" --config ../.swiftformat --swiftversion 5.4\n";
+			shellScript = "#cd ../BuildTools\n#SDKROOT=(xcrun --sdk macosx --show-sdk-path)\n#swift run -c release swiftformat \"$SRCROOT\" --config ../.swiftformat --swiftversion 5.4\n";
 		};
 		6AD8654328BE18950051037D /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -893,7 +893,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ../BuildTools\nSDKROOT=(xcrun --sdk macosx --show-sdk-path)\nswift run -c release swiftlint --no-cache \"$SRCROOT\" --config ../.swiftlint.yml --path ../Paw\n";
+			shellScript = "#cd ../BuildTools\n#SDKROOT=(xcrun --sdk macosx --show-sdk-path)\n#swift run -c release swiftlint --no-cache \"$SRCROOT\" --config ../.swiftlint.yml --path ../Paw\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
