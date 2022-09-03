@@ -1,8 +1,5 @@
 //
-//  WeakRefVirtualProxy.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// WeakRefVirtualProxy.swift
 //
 
 import UIKit

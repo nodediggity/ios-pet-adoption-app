@@ -1,8 +1,5 @@
 //
-//  UIView+Shadow.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// UIView+Shadow.swift
 //
 
 import UIKit

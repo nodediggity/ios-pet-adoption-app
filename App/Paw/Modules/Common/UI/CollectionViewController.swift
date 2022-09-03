@@ -1,20 +1,16 @@
 //
-//  CollectionViewController.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// CollectionViewController.swift
 //
 
 import UIKit
 
 public final class CollectionViewController: UICollectionViewController {
-    
     public typealias DataSource = UICollectionViewDiffableDataSource<SectionController, CellController>
 
     public var configure: ((UICollectionView) -> Void)?
-    
+
     public var onLoad: (() -> Void)?
-    
+
     private var layout: ((DataSource) -> UICollectionViewLayout)?
 
     private lazy var dataSource: DataSource = {
@@ -33,34 +29,34 @@ public final class CollectionViewController: UICollectionViewController {
         nil
     }
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         load()
     }
-    
-    public override func traitCollectionDidChange(_ previous: UITraitCollection?) {
+
+    override public func traitCollectionDidChange(_ previous: UITraitCollection?) {
         if previous?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
             collectionView.reloadData()
         }
     }
 
-    public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    override public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let dl = controller(at: indexPath)?.delegate
         dl?.collectionView?(collectionView, didSelectItemAt: indexPath)
     }
 
-    public override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    override public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let dl = controller(at: indexPath)?.delegate
         dl?.collectionView?(collectionView, willDisplay: cell, forItemAt: indexPath)
     }
 
-    public override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    override public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let dl = controller(at: indexPath)?.delegate
         dl?.collectionView?(collectionView, didEndDisplaying: cell, forItemAt: indexPath)
     }
-    
-    public override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+
+    override public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         guard collectionView.refreshControl?.isRefreshing == true else { return }
         load()
     }
@@ -74,7 +70,7 @@ public final class CollectionViewController: UICollectionViewController {
 
         dataSource.apply(snapshot)
     }
-    
+
     public func display(_ sections: SectionController...) {
         display(sections)
     }
@@ -110,18 +106,18 @@ private extension CollectionViewController {
     func load() {
         onLoad?()
     }
-    
+
     func configureUI() {
         collectionView.dataSource = dataSource
         collectionView.prefetchDataSource = self
         collectionView.contentInset.bottom = 16
-        
+
         collectionView.backgroundColor = .systemBackground
-        
+
         if let layout = layout {
             collectionView.collectionViewLayout = layout(dataSource)
         }
-        
+
         configure?(collectionView)
     }
 

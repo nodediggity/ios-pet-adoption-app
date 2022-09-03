@@ -1,8 +1,5 @@
 //
-//  UIView+LayoutCycle.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 02/09/2022.
+// UIView+LayoutCycle.swift
 //
 
 import UIKit

@@ -1,12 +1,9 @@
 //
-//  PostDetailImageViewCell+TestHelpers.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 03/09/2022.
+// PostDetailImageViewCell+TestHelpers.swift
 //
 
-import UIKit
 import Paw
+import UIKit
 
 extension PetDetailImageViewCell {
     var renderedImage: Data? {

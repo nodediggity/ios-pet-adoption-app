@@ -1,8 +1,5 @@
 //
-//  PetDetailViewBookCell+TestHelpers.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 03/09/2022.
+// PetDetailViewBookCell+TestHelpers.swift
 //
 
 import Foundation

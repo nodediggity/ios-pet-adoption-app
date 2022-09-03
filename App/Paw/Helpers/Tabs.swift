@@ -1,8 +1,5 @@
 //
-//  Tabs.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// Tabs.swift
 //
 
 import UIKit
@@ -24,11 +21,11 @@ enum Tabs: CaseIterable {
         switch self {
         case .feed: return imageNamed("house")
         case .alerts: return imageNamed("notification")
-        case .profile:return imageNamed("user")
+        case .profile: return imageNamed("user")
         }
     }
-    
+
     private func imageNamed(_ name: String) -> UIImage? {
-        return UIImage(named: name)?.resized(to: CGSize(width: 28, height: 28)).withRenderingMode(.alwaysTemplate)
+        UIImage(named: name)?.resized(to: CGSize(width: 28, height: 28)).withRenderingMode(.alwaysTemplate)
     }
 }

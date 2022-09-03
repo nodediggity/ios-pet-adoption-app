@@ -1,25 +1,20 @@
 //
-//  FeedItemPresenterTests.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 02/09/2022.
+// FeedItemPresenterTests.swift
 //
 
-import XCTest
 import Paw
+import XCTest
 
 class FeedItemPresenterTests: XCTestCase {
-    
     func test_map_createsViewModel() {
         let item = makeItem()
-        
+
         let viewModel = FeedItemPresenter.map(item)
-        
+
         XCTAssertEqual(viewModel.name, item.name)
         XCTAssertEqual(viewModel.age, item.age)
         XCTAssertEqual(viewModel.breed, item.breed)
     }
-    
 }
 
 private extension FeedItemPresenterTests {

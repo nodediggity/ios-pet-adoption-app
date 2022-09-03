@@ -1,12 +1,9 @@
 //
-//  LocalizedRelativeDateTimeFormatterTests.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 03/09/2022.
+// LocalizedRelativeDateTimeFormatterTests.swift
 //
 
-import XCTest
 import Paw
+import XCTest
 
 class LocalizedRelativeDateTimeFormatterTests: XCTestCase {
     func test_returnsInOneDayWhenDatesFarApart() {

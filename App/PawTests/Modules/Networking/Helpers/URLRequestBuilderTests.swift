@@ -1,15 +1,11 @@
 //
-//  URLRequestBuilderTests.swift
-//  PawTests
-//
-//  Created by Gordon Smith on 01/09/2022.
+// URLRequestBuilderTests.swift
 //
 
-import XCTest
 import Paw
+import XCTest
 
 class URLRequestBuilderTests: XCTestCase {
-    
     func test_init_withURLDeliversURLRequest() throws {
         let baseURL = makeURL(addr: "https://google.com/foo/bar?boo=baz")
         let sut = URLRequestBuilder(baseUrl: baseURL)
@@ -78,7 +74,7 @@ class URLRequestBuilderTests: XCTestCase {
 
         XCTAssertEqual(result.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
-    
+
     func test_adding_URLEncodedContentType() throws {
         let result = try URLRequestBuilder(host: "google.com")
             .set(contentType: .urlencoded)

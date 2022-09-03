@@ -1,8 +1,5 @@
 //
-//  FeedResponseMapper.swift
-//  Paw
-//
-//  Created by Gordon Smith on 01/09/2022.
+// FeedResponseMapper.swift
 //
 
 import Foundation

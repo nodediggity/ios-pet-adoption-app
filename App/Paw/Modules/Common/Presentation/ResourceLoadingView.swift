@@ -1,8 +1,5 @@
 //
-//  ResourceLoadingView.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// ResourceLoadingView.swift
 //
 
 import Foundation

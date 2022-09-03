@@ -1,15 +1,11 @@
 //
-//  PetDetailViewBookCell.swift
-//  Paw
-//
-//  Created by Gordon Smith on 03/09/2022.
+// PetDetailViewBookCell.swift
 //
 
 import UIKit
 
 public final class PetDetailViewBookCell: UICollectionViewCell {
-    
-    private(set) public lazy var button: UIButton = {
+    public private(set) lazy var button: UIButton = {
         let view = UIButton(type: .system)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor(hex: "F2968F")
@@ -19,30 +15,29 @@ public final class PetDetailViewBookCell: UICollectionViewCell {
         view.clipsToBounds = true
         return view
     }()
-    
-    public override init(frame: CGRect) {
+
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
     }
-    
+
     public required init?(coder: NSCoder) {
         nil
     }
-    
 }
 
 private extension PetDetailViewBookCell {
     func configureUI() {
         contentView.backgroundColor = .clear
         contentView.addSubview(button)
-        
+
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: contentView.topAnchor),
             button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: button.trailingAnchor),
             button.heightAnchor.constraint(equalToConstant: 50)
         ])
-        
+
         let buttonBottomAnchor = contentView.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: 16)
         buttonBottomAnchor.priority = .defaultLow
         buttonBottomAnchor.isActive = true

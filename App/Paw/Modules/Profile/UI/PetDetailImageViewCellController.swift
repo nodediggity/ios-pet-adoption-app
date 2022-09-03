@@ -1,17 +1,13 @@
 //
-//  PetDetailImageViewCellController.swift
-//  Paw
-//
-//  Created by Gordon Smith on 02/09/2022.
+// PetDetailImageViewCellController.swift
 //
 
 import UIKit
 
 public final class PetDetailImageViewCellController: NSObject {
-    
     public var onLoad: (() -> Void)?
     public var onCancel: (() -> Void)?
-    
+
     private var cell: PetDetailImageViewCell?
 }
 
@@ -19,14 +15,14 @@ extension PetDetailImageViewCellController: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         1
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         cell = collectionView.dequeueReusableCell(for: indexPath)
-        
+
         cell?.imageView.image = nil
-        
+
         onLoad?()
-        
+
         return cell!
     }
 }
@@ -41,7 +37,7 @@ extension PetDetailImageViewCellController: UICollectionViewDataSourcePrefetchin
     public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         onLoad?()
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
         cancelLoad()
     }
@@ -59,7 +55,7 @@ private extension PetDetailImageViewCellController {
         releaseCellForReuse()
         onCancel?()
     }
-    
+
     func releaseCellForReuse() {
         cell = nil
     }

@@ -1,8 +1,5 @@
 //
-//  PetDetailTagCellController.swift
-//  Paw
-//
-//  Created by Gordon Smith on 03/09/2022.
+// PetDetailTagCellController.swift
 //
 
 import UIKit
