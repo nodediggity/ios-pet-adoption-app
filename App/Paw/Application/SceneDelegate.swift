@@ -20,10 +20,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         rootViewController.tabBar.tintColor = UIColor(hex: "F2968F")
         rootViewController.tabBar.unselectedItemTintColor = .lightGray
 
-        rootViewController.viewControllers = makeTabs(tabs: [.feed, .search, .profile])
+        rootViewController.viewControllers = makeTabs(tabs: [.feed, .alerts, .profile])
         window.rootViewController = rootViewController
-        
+                
         window.makeKeyAndVisible()
+        
         self.window = window
     }
 }
@@ -55,8 +56,40 @@ private extension SceneDelegate {
             .eraseToAnyPublisher()
     }
     
+    func makeRemoteProfileLoader(id: UUID) -> () -> AnyPublisher<Profile, Error> {
+        return { [httpClient] in
+            do {
+                let request = try URLRequestBuilder()
+                    .set(scheme: "http")
+                    .set(host: "localhost")
+                    .set(path: ["profile", "\(id.uuidString)"])
+                    .build()
+                
+                return httpClient
+                    .dispatch(request)
+                    .tryMap(ProfileResponseMapper.map)
+                    .eraseToAnyPublisher()
+                
+            } catch {
+                return Fail(error: error).eraseToAnyPublisher()
+            }
+        }
+    }
+    
     func makeFeedScene() -> UIViewController {
-        FeedUIComposer.compose(loader: makeRemoteFeedLoader, imageLoader: makeRemoteImageLoader) { _ in }
+        FeedUIComposer.compose(
+            loader: makeRemoteFeedLoader,
+            imageLoader: makeRemoteImageLoader,
+            selection: showFeedDetailScene
+        )
+    }
+    
+    func showFeedDetailScene(item: FeedItem) {
+        let controller = FeedDetailUIComposer.compose(
+            loader: makeRemoteProfileLoader(id: item.id),
+            imageLoader: makeRemoteImageLoader
+        )
+        showOnTab(controller)
     }
     
     func makeTabs(tabs: [Tabs]) -> [UINavigationController] {
@@ -70,12 +103,20 @@ private extension SceneDelegate {
 
         return zip(tabs, navControllers).map { tab, navController in
             switch tab {
-            case .feed: navController.setViewControllers([makeFeedScene()], animated: false)
-            default: navController.setViewControllers([UIViewController()], animated: false)
+            case .feed:
+                navController.setViewControllers([makeFeedScene()], animated: false)
+            case .alerts:
+                navController.setViewControllers([PlaceholderViewController(text: "Alerts")], animated: false)
+            case .profile:
+                navController.setViewControllers([PlaceholderViewController(text: "Your Profile")], animated: false)
             }
-            
-            navController.showLogo()
+            navController.configureLogo()
             return navController
         }
+    }
+    
+    func showOnTab(_ controller: UIViewController) {
+        let tabBarController = window?.rootViewController as? UITabBarController
+        tabBarController?.selectedViewController?.show(controller, sender: nil)
     }
 }

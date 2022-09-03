@@ -142,11 +142,11 @@ class FeedUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(spy.loadImageRequests.isEmpty)
         
-        sut.simulateItemVisible(at: 0)
+        sut.simulateFeedItemVisible(at: 0)
         
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL])
         
-        sut.simulateItemVisible(at: 1)
+        sut.simulateFeedItemVisible(at: 1)
         
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item1.imageURL])
     }
@@ -164,11 +164,11 @@ class FeedUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(spy.cancelledRequests.isEmpty)
         
-        sut.simulateItemNotVisible(at: 0)
+        sut.simulateFeedItemNotVisible(at: 0)
         
         XCTAssertEqual(spy.cancelledRequests, [item0.imageURL])
         
-        sut.simulateItemNotVisible(at: 1)
+        sut.simulateFeedItemNotVisible(at: 1)
         
         XCTAssertEqual(spy.cancelledRequests, [item0.imageURL, item1.imageURL])
     }
@@ -184,8 +184,8 @@ class FeedUIIntegrationTests: XCTestCase {
         let feed = [item0, item1]
         spy.completeFeedLoading(with: .success(feed))
         
-        let view0 = sut.simulateItemVisible(at: 0)
-        let view1 = sut.simulateItemVisible(at: 1)
+        let view0 = sut.simulateFeedItemVisible(at: 0)
+        let view1 = sut.simulateFeedItemVisible(at: 1)
         
         XCTAssertNil(view0?.renderedImage)
         XCTAssertNil(view1?.renderedImage)
@@ -218,11 +218,11 @@ class FeedUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(spy.loadImageRequests.isEmpty)
         
-        sut.simulateItemNearVisible(at: 0)
+        sut.simulateFeedItemNearVisible(at: 0)
         
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL])
         
-        sut.simulateItemNearVisible(at: 1)
+        sut.simulateFeedItemNearVisible(at: 1)
         
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item1.imageURL])
     }
@@ -240,11 +240,11 @@ class FeedUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(spy.cancelledRequests.isEmpty)
         
-        sut.simulateItemNoLongerNearVisible(at: 0)
+        sut.simulateFeedItemNoLongerNearVisible(at: 0)
         
         XCTAssertEqual(spy.cancelledRequests, [item0.imageURL])
         
-        sut.simulateItemNoLongerNearVisible(at: 1)
+        sut.simulateFeedItemNoLongerNearVisible(at: 1)
         
         XCTAssertEqual(spy.cancelledRequests, [item0.imageURL, item1.imageURL])
     }
@@ -254,7 +254,7 @@ class FeedUIIntegrationTests: XCTestCase {
         sut.loadViewIfNeeded()
         spy.completeFeedLoading(with: .success([makeItem(category: .dog)]))
         
-        let view = sut.simulateItemNotVisible(at: 0)
+        let view = sut.simulateFeedItemNotVisible(at: 0)
         spy.completeImageLoading(with: .success(UIImage.makeImageData(withColor: .red)))
         
         XCTAssertNil(view?.renderedImage)
@@ -268,7 +268,7 @@ class FeedUIIntegrationTests: XCTestCase {
         let feed = [makeItem(category: .dog)]
         spy.completeFeedLoading(with: .success(feed))
         
-        _ = sut.simulateItemVisible(at: 0)
+        _ = sut.simulateFeedItemVisible(at: 0)
         
         let exp = expectation(description: "await background queue")
         DispatchQueue.global().async {
@@ -284,23 +284,23 @@ class FeedUIIntegrationTests: XCTestCase {
         sut.loadViewIfNeeded()
         spy.completeFeedLoading(with: .success([item0]))
         
-        sut.simulateItemNearVisible(at: 0)
+        sut.simulateFeedItemNearVisible(at: 0)
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL])
         
-        sut.simulateItemNearVisible(at: 0)
+        sut.simulateFeedItemNearVisible(at: 0)
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL])
         
         let imageData0 = UIImage.makeImageData(withColor: .blue)
         spy.completeImageLoading(with: .success(imageData0))
         
-        sut.simulateItemNearVisible(at: 0)
+        sut.simulateFeedItemNearVisible(at: 0)
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item0.imageURL])
         
-        sut.simulateItemNearVisible(at: 0)
+        sut.simulateFeedItemNearVisible(at: 0)
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item0.imageURL])
         
-        sut.simulateItemNotVisible(at: 0)
-        sut.simulateItemNearVisible(at: 0)
+        sut.simulateFeedItemNotVisible(at: 0)
+        sut.simulateFeedItemNearVisible(at: 0)
         XCTAssertEqual(spy.loadImageRequests, [item0.imageURL, item0.imageURL, item0.imageURL])
     }
     
@@ -321,11 +321,11 @@ class FeedUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(output.isEmpty)
         
-        sut.simulateItemSelection(at: 0)
+        sut.simulateFeedItemSelection(at: 0)
         
         XCTAssertEqual(output, [item0])
         
-        sut.simulateItemSelection(at: 1)
+        sut.simulateFeedItemSelection(at: 1)
         
         XCTAssertEqual(output, [item0, item1])
     }

@@ -5,7 +5,6 @@
 //  Created by Gordon Smith on 02/09/2022.
 //
 
-import Foundation
 import UIKit
 
 final class FeedViewAdapter {
@@ -44,6 +43,6 @@ extension FeedViewAdapter: ResourceView {
             return CellController(id: item, view)
         }
         
-        controller.display(feed)
+        controller.display(SectionController(category: .grid, controllers: feed))
     }
 }
