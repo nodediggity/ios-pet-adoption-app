@@ -34,6 +34,11 @@ extension CollectionViewController {
 
 extension CollectionViewController {
     private var homeFeedSection: Int { 0 }
+    
+    func renderedGridItemImageData(at index: Int) -> Data? {
+        let view = simulateFeedItemVisible(at: index)
+        return view?.renderedImage
+    }
 
     @discardableResult
     func simulateFeedItemVisible(at index: Int) -> PetGridViewCell? {

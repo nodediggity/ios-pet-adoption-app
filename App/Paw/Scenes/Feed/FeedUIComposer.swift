@@ -15,7 +15,6 @@ enum FeedUIComposer {
 
         controller.configure = {
             $0.refreshControl = UIRefreshControl(frame: .zero)
-            $0.register(PetGridViewCell.self)
         }
 
         let adapter = LoadResourcePresentationAdapter<[FeedItem], FeedViewAdapter>(loader: loader)

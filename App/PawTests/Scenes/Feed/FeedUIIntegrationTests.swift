@@ -180,23 +180,20 @@ class FeedUIIntegrationTests: XCTestCase {
         let feed = [item0, item1]
         spy.completeFeedLoading(with: .success(feed))
 
-        let view0 = sut.simulateFeedItemVisible(at: 0)
-        let view1 = sut.simulateFeedItemVisible(at: 1)
-
-        XCTAssertNil(view0?.renderedImage)
-        XCTAssertNil(view1?.renderedImage)
+        XCTAssertNil(sut.renderedGridItemImageData(at: 0))
+        XCTAssertNil(sut.renderedGridItemImageData(at: 1))
 
         let imageData0 = UIImage.makeImageData(withColor: .red)
         spy.completeImageLoading(with: .success(imageData0))
 
-        XCTAssertEqual(view0?.renderedImage, imageData0)
-        XCTAssertNil(view1?.renderedImage)
+        XCTAssertEqual(sut.renderedGridItemImageData(at: 0), imageData0)
+        XCTAssertNil(sut.renderedGridItemImageData(at: 1))
 
         let imageData1 = UIImage.makeImageData(withColor: .blue)
         spy.completeImageLoading(with: .success(imageData1), at: 1)
 
-        XCTAssertEqual(view0?.renderedImage, imageData0)
-        XCTAssertEqual(view1?.renderedImage, imageData1)
+        XCTAssertEqual(sut.renderedGridItemImageData(at: 0), imageData0)
+        XCTAssertEqual(sut.renderedGridItemImageData(at: 1), imageData1)
     }
 
     // MARK: - Image Loading (Preloading)
