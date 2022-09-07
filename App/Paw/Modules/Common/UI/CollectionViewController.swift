@@ -74,6 +74,18 @@ public final class CollectionViewController: UICollectionViewController {
     public func display(_ sections: SectionController...) {
         display(sections)
     }
+    
+    public func reload(_ controller: CellController) {
+        var snapshot = dataSource.snapshot()
+        
+        if #available(iOS 15.0, *) {
+            snapshot.reconfigureItems([controller])
+        } else {
+            snapshot.reloadItems([controller])
+        }
+        
+        dataSource.apply(snapshot)
+    }
 }
 
 extension CollectionViewController: UICollectionViewDataSourcePrefetching {

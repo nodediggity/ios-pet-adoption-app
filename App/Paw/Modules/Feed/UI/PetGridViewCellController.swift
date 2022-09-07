@@ -7,11 +7,18 @@ import UIKit
 public final class PetGridViewCellController: NSObject {
     public var onLoad: (() -> Void)?
     public var onCancel: (() -> Void)?
+    public var onChange: (() -> Void)?
 
     private let viewModel: FeedItemViewModel
+    private var image: UIImage?
     private let selection: () -> Void
-
-    private var cell: PetGridViewCell?
+    
+    private let registration = UICollectionView.CellRegistration<PetGridViewCell, PetGridViewCellController> { cell, _, item in
+        cell.name = item.viewModel.name
+        cell.age = item.viewModel.age
+        cell.breed = item.viewModel.breed
+        cell.image = item.image
+    }
 
     init(viewModel: FeedItemViewModel, selection: @escaping () -> Void) {
         self.viewModel = viewModel
@@ -25,16 +32,9 @@ extension PetGridViewCellController: UICollectionViewDataSource {
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        cell = collectionView.dequeueReusableCell(for: indexPath)
-
-        cell?.nameLabel.text = viewModel.name
-        cell?.breedLabel.text = viewModel.breed
-        cell?.ageLabel.text = viewModel.age
-        cell?.imageView.image = nil
-
+        let cell = collectionView.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: self)
         onLoad?()
-
-        return cell!
+        return cell
     }
 }
 
@@ -61,17 +61,13 @@ extension PetGridViewCellController: UICollectionViewDataSourcePrefetching {
 extension PetGridViewCellController: ResourceView {
     public typealias ResourceViewModel = UIImage
     public func display(_ viewModel: ResourceViewModel) {
-        cell?.imageView.image = viewModel
+        self.image = viewModel
+        onChange?()
     }
 }
 
 private extension PetGridViewCellController {
     func cancelLoad() {
-        releaseCellForReuse()
         onCancel?()
-    }
-
-    func releaseCellForReuse() {
-        cell = nil
     }
 }

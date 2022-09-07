@@ -7,18 +7,18 @@ import UIKit
 
 extension PetGridViewCell {
     var nameText: String? {
-        nameLabel.text
+        name
     }
 
     var ageText: String? {
-        ageLabel.text
+        age
     }
 
     var breedText: String? {
-        breedLabel.text
+        breed
     }
 
     var renderedImage: Data? {
-        imageView.image?.pngData()
+        image?.pngData()
     }
 }

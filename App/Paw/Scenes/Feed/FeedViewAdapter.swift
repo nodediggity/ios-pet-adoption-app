@@ -36,6 +36,10 @@ extension FeedViewAdapter: ResourceView {
 
             view.onLoad = adapter.loadResource
             view.onCancel = adapter.cancel
+            view.onChange = { [weak controller, weak view] in
+                guard let controller = controller, let view = view else { return }
+                controller.reload(CellController(id: item, view))
+            }
 
             return CellController(id: item, view)
         }
